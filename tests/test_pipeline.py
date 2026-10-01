@@ -145,3 +145,10 @@ def test_every_language_has_skill_json(lang):
     assert data["skill_id"] == "ovos-good-manners-pipeline-plugin.openvoiceos"
     for key in ("name", "description", "examples", "tags"):
         assert data[key], f"{lang}: {key}"
+
+
+@pytest.mark.parametrize("lang,thanks", [("en-US", "thank you"), ("de-DE", "danke"), ("da-DK", "mange tak")])
+def test_thanks_counts_as_good_manners(plugin, lang, thanks):
+    say(plugin, f"{thanks}", lang=lang)
+    say(plugin, f"{thanks}", lang=lang)
+    assert plugin.spoken == [("was_polite", {})]

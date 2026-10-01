@@ -1,0 +1,23 @@
+{
+  "skill_id": "ovos-good-manners-pipeline-plugin.openvoiceos",
+  "source": "https://github.com/OpenVoiceOS/ovos-skill-good-manners",
+  "package_name": "ovos-good-manners-pipeline-plugin",
+  "pip_spec": "ovos-good-manners-pipeline-plugin",
+  "license": "Apache-2.0",
+  "author": "OpenVoiceOS",
+  "name": "God opførsel",
+  "description": "Lytter til hvordan du spørger, ikke kun hvad du spørger om: roser god opførsel og irettesætter grimt sprog, efter at dit spørgsmål er besvaret som normalt. Et pipeline-plugin, der aldrig står i vejen for svaret.",
+  "examples": [
+    "Hvad er klokken, vær sød at sige det",
+    "Vil du være sød at fortælle en vittighed",
+    "Hvis du ikke har noget imod det, hvordan er vejret?"
+  ],
+  "tags": [
+    "opførsel",
+    "høflighed",
+    "bandeord",
+    "sjov",
+    "pipeline"
+  ],
+  "icon": "https://raw.githubusercontent.com/OpenVoiceOS/ovos-skill-good-manners/master/goodmanner.png"
+}

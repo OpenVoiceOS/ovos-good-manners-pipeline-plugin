@@ -14,6 +14,18 @@ An OVOS pipeline plugin that reinforces good manners and reprimands foul languag
 
 > Originally a Mycroft skill by [@JarbasAl](https://github.com/JarbasAl) (2018). It is being rewritten as a pipeline plugin, see [#9](https://github.com/OpenVoiceOS/ovos-skill-good-manners/issues/9).
 
+## Why manners matter
+
+### Acknowledge and appreciate good manners in others
+
+Manners are reciprocal. If someone holds a door, say thank you. If you need something from a grocery shelf, and someone else is in the way, say "excuse me, please." Or ask them "could you please hand me a box of that cereal?" and then thank them.
+
+### Why do we need manners?
+
+Manners make the world go 'round. They are to the smooth functioning of society as oil is to an engine. Without good manners, people get offended, hurt, and in extreme cases, very bad manners can lead to things such as the all-too-familiar public shootings, and even wars between countries when some official protocol is snubbed.
+
+So this plugin listens to how you talk to your assistant: it shows appreciation for good manners, and reprimands insults and foul language.
+
 ## How it works
 
 The plugin is a stage in ovos-core's intent pipeline that **observes but never matches**:

@@ -1,0 +1,23 @@
+{
+  "skill_id": "ovos-good-manners-pipeline-plugin.openvoiceos",
+  "source": "https://github.com/OpenVoiceOS/ovos-skill-good-manners",
+  "package_name": "ovos-good-manners-pipeline-plugin",
+  "pip_spec": "ovos-good-manners-pipeline-plugin",
+  "license": "Apache-2.0",
+  "author": "OpenVoiceOS",
+  "name": "Good Manners",
+  "description": "Listens to how you ask, not just what you ask: compliments good manners and reprimands foul language, after your request has been answered as usual. A pipeline plugin that never gets in the way of the answer.",
+  "examples": [
+    "What time is it, please?",
+    "Could you please tell me a joke?",
+    "If you don't mind, what's the weather like?"
+  ],
+  "tags": [
+    "manners",
+    "politeness",
+    "profanity",
+    "fun",
+    "pipeline"
+  ],
+  "icon": "https://raw.githubusercontent.com/OpenVoiceOS/ovos-skill-good-manners/master/goodmanner.png"
+}

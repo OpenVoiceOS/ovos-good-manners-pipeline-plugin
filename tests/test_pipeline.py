@@ -136,3 +136,12 @@ def test_new_utterance_supersedes_waiting_comeback(plugin):
     plugin.match(["what time is it"], "en-US", second)
     plugin.handle_utterance_handled(handled_message())
     assert plugin.spoken == []
+
+
+@pytest.mark.parametrize("lang", sorted(p.name for p in (REPO_ROOT / "locale").iterdir()))
+def test_every_language_has_skill_json(lang):
+    import json
+    data = json.loads((REPO_ROOT / "locale" / lang / "skill.json").read_text(encoding="utf-8"))
+    assert data["skill_id"] == "ovos-good-manners-pipeline-plugin.openvoiceos"
+    for key in ("name", "description", "examples", "tags"):
+        assert data[key], f"{lang}: {key}"

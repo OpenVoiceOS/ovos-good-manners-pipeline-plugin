@@ -47,7 +47,8 @@ Put the plugin **first** in the pipeline in `mycroft.conf`, followed by your nor
     ],
     "ovos-good-manners-pipeline-plugin": {
       "polite_threshold": 4,
-      "polite_timeout": 10
+      "polite_timeout": 10,
+      "max_delay": 20
     }
   }
 }
@@ -57,6 +58,7 @@ Put the plugin **first** in the pipeline in `mycroft.conf`, followed by your nor
 |---|---|---|
 | `polite_threshold` | `4` | polite requests in a row before you get a compliment |
 | `polite_timeout` | `10` | minutes without a polite request before the streak starts over |
+| `max_delay` | `20` | seconds after the utterance after which a comeback is dropped instead of said late |
 
 Since the pipeline is chosen per session, a HiveMind client can enable or disable the plugin through its own `session.pipeline`.
 

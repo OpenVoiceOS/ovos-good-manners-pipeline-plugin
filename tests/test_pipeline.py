@@ -1,3 +1,4 @@
+import sys
 from pathlib import Path
 
 import pytest
@@ -117,3 +118,21 @@ def test_spoken_on_the_bus_in_the_utterance_language():
     text, session_id = spoken[0]
     assert session_id == "hive-1"
     assert "lort og fanden" in text or "fanden og lort" in text
+
+
+def test_late_comeback_is_dropped(plugin, monkeypatch):
+    clock = [1000.0]
+    monkeypatch.setattr(sys.modules["good_manners_pipeline"].time, "monotonic", lambda: clock[0])
+    plugin.match(["what the fuck"], "en-US", utterance_message())
+    clock[0] += 25  # end marker held up behind a busy core
+    plugin.handle_utterance_handled(handled_message())
+    assert plugin.spoken == []
+
+
+def test_new_utterance_supersedes_waiting_comeback(plugin):
+    first, second = utterance_message(), utterance_message()
+    plugin.match(["what the fuck"], "en-US", first)
+    # the next request arrives before the first one's end marker got through
+    plugin.match(["what time is it"], "en-US", second)
+    plugin.handle_utterance_handled(handled_message())
+    assert plugin.spoken == []

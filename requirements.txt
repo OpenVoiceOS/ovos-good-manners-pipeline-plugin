@@ -1,0 +1,4 @@
+ovos-plugin-manager
+ovos-workshop
+ovos-bus-client
+ovos-utils

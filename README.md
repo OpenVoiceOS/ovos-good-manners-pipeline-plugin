@@ -1,67 +1,71 @@
+# <img src='goodmanner.png' width='50' height='50' style='vertical-align:bottom'/> Good Manners
 
-# <img src='goodmanner.png' width='50' height='50' style='vertical-align:bottom'/> Good Manners Enforcer
+An OVOS pipeline plugin that reinforces good manners and reprimands foul language, without getting in the way of what you actually asked for.
 
-Responds to insults and good manners
+```
+"hey mycroft, what the fuck is the weather"
+→ the weather is answered as usual
+→ "avoid using the word fuck, it makes you look bad"
 
+"please tell me a joke" / "what time is it, please" / ...
+→ answered as usual, and after a few polite requests in a row:
+→ "you have really good manners, i like you"
+```
 
-## About
+> Originally a Mycroft skill by [@JarbasAl](https://github.com/JarbasAl) (2018). It is being rewritten as a pipeline plugin, see [#9](https://github.com/OpenVoiceOS/ovos-skill-good-manners/issues/9).
 
-### Acknowledge and Appreciate Good Manners in Others
-Manners are reciprocal. If someone holds a door, say thank you. If you need something from
-a grocery shelf, and someone else is in the way, say "excuse me, please." Or ask them
-"could you please hand me a box of that cereal?" and then thank them.
+## How it works
 
-### Why Do We Need Manners?
-Manners make the world go 'round. They are to the smooth functioning of society as oil is
-to an engine.
-Without good manners, people get offended, hurt, and in extreme cases, very bad manners
-can lead to things such as the all-too-familiar public shootings, and even wars between
-countries when some official protocol is snubbed.
+The plugin is a stage in ovos-core's intent pipeline that **observes but never matches**:
 
-This skill monitor utterances and reprimand insults / foul language, show appreciation for good manners
+1. It sits first in the pipeline, so it sees every utterance before any other stage can claim it.
+2. It classifies the utterance (polite, foul language) and remembers the result for that session, then declines, so the utterance goes on to the stage that really handles it.
+3. When that utterance has been handled (`ovos.utterance.handled`), it speaks its comeback, in the language of the utterance and to the session that said it.
 
-        “hey mycroft, play the news please”
-        news play
-        “hey mycroft, can you please tell me a joke”
-        chuck norris joke
-        “hey mycroft, please tell me the price of bitcoin”
-        bitcoin price
-        you have really good manners, i like you
-        "hey mycroft, You are a disgusting maggot of a person."
-        sorry, i don't know how to answer that
-        you shouldn't be rude
-        "hey mycroft, what the fuck is this shit"
-        sorry, i don't know how to answer that
-        fuck and shit are such ugly words
-        "hey mycroft, can you please check the fucking asshole weather"
-        current weather is something
-        avoid using the words fucking and asshole, makes you look bad
+Intent probes (`intent.service.intent.get`) are ignored, and every session keeps its own polite streak, so on a HiveMind hub one client's manners don't affect another's.
 
-for best insult detection also install in the venv the Insults package (py3 fork)
+Classification is plain vocabulary matching (`locale/<lang>/foul_language.voc` and `polite_words.voc`). A trained politeness/insult classifier is planned.
 
-        pip install git+https://github.com/nguyentr17/Insults
+## Install
 
-## Examples
-* "go F#&K yourself"
-* "eat sh1$ and die"
-* "please something (X times in a row)"
+```bash
+pip install ovos-good-manners-pipeline-plugin
+```
+
+## Configuration
+
+Put the plugin **first** in the pipeline in `mycroft.conf`, followed by your normal pipeline:
+
+```json
+{
+  "intents": {
+    "pipeline": [
+      "ovos-good-manners-pipeline-plugin",
+      "stop_high",
+      "converse",
+      "..."
+    ],
+    "ovos-good-manners-pipeline-plugin": {
+      "polite_threshold": 4,
+      "polite_timeout": 10
+    }
+  }
+}
+```
+
+| Setting | Default | Meaning |
+|---|---|---|
+| `polite_threshold` | `4` | polite requests in a row before you get a compliment |
+| `polite_timeout` | `10` | minutes without a polite request before the streak starts over |
+
+Since the pipeline is chosen per session, a HiveMind client can enable or disable the plugin through its own `session.pipeline`.
+
+## Languages
+
+English, German and Danish. A language needs `foul_language.voc`, `polite_words.voc`, `and.voc` and the four `.dialog` files in `locale/<lang>/`.
 
 ## Credits
-@JarbasAl
 
-## TODO
-
-* handle single foul word (dialog is always plural)
-* test extensively
-* improve readme
-* settingsmeta.json
-* skill unittests
-* submit to market
-
-
-## Category
-**Daily**
-**Entertainment**
-
-## Tags
-#goodmanners
+- [@JarbasAl](https://github.com/JarbasAl), original skill
+- [@gras64](https://github.com/gras64), German translation
+- [@andlo](https://github.com/andlo)

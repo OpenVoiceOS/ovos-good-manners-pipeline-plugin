@@ -1,160 +1,259 @@
 """
-skill good manners
+OVOS Good Manners - pipeline plugin
 
-Copyright (C) 2018 JarbasAI
+Originally a Mycroft skill by JarbasAI (2018), rewritten as an OVOS
+pipeline plugin.
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+Licensed under the Apache License, Version 2.0.
 
-The above copyright notice and this permission notice shall be included in all
- copies or substantial portions of the Software.
+---
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
-THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
-IN THE SOFTWARE.
+Reinforces good manners and reprimands foul language, without ever
+getting in the way of what the user actually asked for.
 
+How it works:
+
+- The plugin sits FIRST in the intent pipeline, so it sees every
+  utterance before any other stage can claim it.
+- match() only observes: it classifies the utterance (polite / insult /
+  foul language), stores the verdict for the session, and always returns
+  None, so the utterance falls through to the stage that really handles it.
+- When that utterance is finished (ovos.utterance.handled), the stored
+  verdict is turned into a comeback: "you have really good manners",
+  "X and Y are such ugly words", ...
+
+The pipeline is selected per session (session.pipeline), so on a
+HiveMind hub each client can have it enabled or not. Everything is kept
+per session id for the same reason.
+
+Classification is plain .voc matching for now. A trained
+politeness/insult classifier can plug in at _classify() later; whatever
+runs there runs on every single utterance, so it has to be fast.
 """
 
-from datetime import timedelta, datetime
+import re
+import threading
+import time
+from dataclasses import dataclass, field
+from os.path import dirname
+from typing import Dict, List, Optional, Union
 
-from ai_demos.cornell import politeness
-from ovos_workshop.skills import OVOSSkill
+from ovos_bus_client.client import MessageBusClient
+from ovos_bus_client.message import Message
+from ovos_bus_client.session import SessionManager
+from ovos_plugin_manager.templates.pipeline import IntentHandlerMatch, PipelinePlugin
+from ovos_utils.fakebus import FakeBus
+from ovos_utils.log import LOG
+from ovos_workshop.app import OVOSAbstractApplication
 
-try:
-    from insults import Insults
-except ImportError:
-    Insults = None
+PIPELINE_ID = "ovos-good-manners-pipeline-plugin"
+
+# ovos-core also runs the pipeline for read-only intent probes
+# (intent.service.intent.get). Those are not something the user said to
+# the assistant, so they are neither counted nor answered.
+PROBE_TOPICS = ("intent.service.intent.get",)
+
+# end-of-utterance marker; on newer ovos-core it is guaranteed exactly once
+# per utterance and carries an utterance_id
+UTTERANCE_HANDLED = "ovos.utterance.handled"
+
+DEFAULT_CONFIG = {
+    # this many polite requests in a row earn a compliment
+    "polite_threshold": 4,
+    # minutes without a polite request before the count starts over
+    "polite_timeout": 10,
+}
+
+DEFAULT_SESSION_ID = "default"
 
 
-class GoodMannersEnforcerSkill(OVOSSkill):
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        if "simple" not in self.settings:
-            # if False use slower more accurate machine learning techniques
-            self.settings["simple"] = True
-        if "insult_threshold" not in self.settings:
-            self.settings["insult_threshold"] = 0.65  # min insult rating
-        if "polite_threshold" not in self.settings:
-            self.settings["polite_threshold"] = 4  # times for comeback
-        if "polite_timeout" not in self.settings:
-            self.settings["polite_timeout"] = 10  # minutes
-        self.model_loaded = False
-        self.comebacks = []
-        self.foul_words = []
-        self.polite_counter = 0
-        self.last_timestamp = datetime.now()
+@dataclass
+class Verdict:
+    """What _classify() found in one utterance."""
+    polite: bool = False
+    insult: bool = False
+    foul_words: List[str] = field(default_factory=list)
 
     @property
-    def simple(self):
-        if not self.lang.lower().startswith("en"):
-            return True
-        return self.settings["simple"]
+    def rude(self) -> bool:
+        return self.insult or bool(self.foul_words)
 
-    def initialize(self):
-        self.maybe_load_insult_model()
-        self.add_event("mycroft.skill.handler.complete", self.handle_output)
-        self.activate()
 
-    def handle_skill_deactivated(self, message=None):
-        """
-        skill is always in active skill list, ie, converse is always called
-        """
-        self.activate()
+@dataclass
+class _Pending:
+    """A verdict waiting for its utterance to be handled."""
+    utterance_id: Optional[str]
+    comebacks: List[str]
+    foul_words: List[str]
+    lang: str
 
-    def maybe_load_insult_model(self):
-        if not self.model_loaded and not self.simple:
-            # load insult classifier
-            # TODO try import, install packages, not in raspberry pi
-            if Insults is not None:
-                Insults.load_model()
-                self.model_loaded = True
 
-    def contains_foul_language(self, utterance):
-        contains = False
-        if self.simple:
-            return self.match_voc_file(utterance, "foul_language")
-        elif Insults is not None:
-            foul_words, _ = Insults.foul_language([utterance], context=False)
-            if len(foul_words):
-                contains = True
-        return contains, foul_words
+@dataclass
+class _PoliteStreak:
+    count: int = 0
+    last: float = 0.0
 
-    def match_voc_file(self, utterance, voc_file):
-        if self.voc_match(utterance, voc_file):
-            foul_words = [
-                w for w in self.voc_match_cache[self.lang + voc_file]
-                if w in utterance
-            ]
-            return True, foul_words
-        return False, []
 
-    def is_insult(self, utterance):
-        if not self.simple and Insults is not None:
-            rating = Insults.rate_comment(utterance)
-            if rating >= self.settings["insult_threshold"]:
-                return True
+def _session_id(message: Optional[Message]) -> str:
+    if message is None:
+        return DEFAULT_SESSION_ID
+    try:
+        return SessionManager.get(message).session_id or DEFAULT_SESSION_ID
+    except Exception:  # malformed session carrier; nothing better to key on
+        return DEFAULT_SESSION_ID
+
+
+def _contains_phrase(utterance: str, phrase: str) -> bool:
+    """Whole-word, case-insensitive match. Lookarounds instead of \\b so
+    phrases that start or end with symbols ("@$$") match as well."""
+    phrase = phrase.strip().lower()
+    if not phrase:
         return False
+    return re.search(rf"(?<!\w){re.escape(phrase)}(?!\w)", utterance) is not None
 
-    def is_polite(self, utterance):
-        if self.simple:
-            return self.voc_match(utterance, "polite_words")
-        else:
-            analysis = politeness(utterance)
-            if analysis["label"] == "polite":
-                return True
-        return False
 
-    def handle_output(self, message):
-        if "polite" in self.comebacks:
-            self.speak_dialog("was_polite")
-        if "insult" in self.comebacks:
-            self.speak_dialog("said_insult")
-        if "foul" in self.comebacks:
-            self.speak_dialog("said_foul_language",
-                              {"foul_words": " and ".join(self.foul_words)})
+class GoodMannersPipeline(PipelinePlugin, OVOSAbstractApplication):
 
-    def handle_reset_event(self, message=None):
-        self.activate()
-        if self.polite_counter < self.settings["polite_threshold"]:
-            self.comebacks = []
-        # reset counter if timeout was reached
-        elif datetime.now() - self.last_timestamp > \
-                timedelta(minutes=self.settings["polite_timeout"]):
-            self.polite_counter = 0
-            self.comebacks = []
-        # check for timeout again in 1 minute
-        self.schedule_event(self.handle_reset_event,
-                            datetime.now() + timedelta(minutes=1),
-                            name='politeness_timeout')
+    def __init__(self, bus: Optional[Union[MessageBusClient, FakeBus]] = None,
+                 config: Optional[Dict] = None):
+        OVOSAbstractApplication.__init__(
+            self, bus=bus, skill_id=f"{PIPELINE_ID}.openvoiceos",
+            resources_dir=dirname(__file__))
+        PipelinePlugin.__init__(self, bus, config)
+        self._init_state()
+        self.add_event(UTTERANCE_HANDLED, self.handle_utterance_handled)
 
-    def converse(self, utterances, lang="en-us"):
-        # pre-process utterance
-        utterance = utterances[0]
-        self.comebacks = []
-        insult = self.is_insult(utterance)
-        foul, self.foul_words = self.contains_foul_language(utterance)
-        if not insult and not foul:
-            if self.is_polite(utterance):
-                self.comebacks.append("polite")
-                # start monitoring for timeout
-                self.last_timestamp = datetime.now()
-                self.schedule_event(self.handle_reset_event,
-                                    datetime.now() + timedelta(minutes=1),
-                                    name='politeness_timeout')
-        else:
-            self.polite_counter = 0
-            if insult:
-                self.comebacks.append("insult")
-            if foul:
-                self.comebacks.append("foul")
-        self.activate()
-        return False
+    def _init_state(self):
+        self._lock = threading.Lock()
+        self._pending: Dict[str, _Pending] = {}  # session id -> waiting verdict
+        self._streaks: Dict[str, _PoliteStreak] = {}  # session id -> polite streak
+        # session id -> key of the last utterance observed, so the same
+        # utterance is only counted once when ovos-core calls match() for
+        # several languages (intents.multilingual_matching)
+        self._last_seen: Dict[str, object] = {}
+        self._voc_cache_by_lang: Dict[tuple, List[str]] = {}
+
+    def _setting(self, key):
+        return (self.config or {}).get(key, DEFAULT_CONFIG[key])
+
+    # --- pipeline ---------------------------------------------------------
+
+    def match(self, utterances: List[str], lang: str,
+              message: Message) -> Optional[IntentHandlerMatch]:
+        """Observe the utterance, never claim it."""
+        if message is None or message.msg_type in PROBE_TOPICS or not utterances:
+            return None
+        try:
+            self._observe(utterances[0], lang, message)
+        except Exception as e:  # never let this plugin break intent matching
+            LOG.error(f"good manners: failed to observe utterance: {e}")
+        return None
+
+    def _observe(self, utterance: str, lang: str, message: Message):
+        session_id = _session_id(message)
+        utterance_id = message.context.get("utterance_id")
+        # newer ovos-core stamps every utterance with an id; on older cores
+        # the Message object is the same across the per-language calls
+        key = utterance_id or id(message)
+        with self._lock:
+            if self._last_seen.get(session_id) == key:
+                return
+            self._last_seen[session_id] = key
+
+        verdict = self._classify(utterance, lang)
+        comebacks = self._comebacks_for(session_id, verdict)
+        with self._lock:
+            if comebacks:
+                self._pending[session_id] = _Pending(
+                    utterance_id, comebacks, verdict.foul_words, lang)
+            else:
+                self._pending.pop(session_id, None)
+
+    def _classify(self, utterance: str, lang: str) -> Verdict:
+        """Plain vocabulary matching. This is where a trained classifier
+        goes later; vocabulary matching stays as the fallback for
+        languages the classifier does not cover."""
+        text = utterance.lower()
+        foul = [w for w in self._vocabulary("foul_language", lang)
+                if _contains_phrase(text, w)]
+        polite = any(_contains_phrase(text, w)
+                     for w in self._vocabulary("polite_words", lang))
+        return Verdict(polite=polite and not foul, insult=False, foul_words=foul)
+
+    def _vocabulary(self, name: str, lang: str) -> List[str]:
+        """The phrases of locale/<lang>/<name>.voc. Loaded through
+        load_lang(lang) rather than voc_list(): voc_list() looks files up in
+        the language of the message in flight, whatever lang it is given."""
+        key = (lang.lower(), name)
+        if key not in self._voc_cache_by_lang:
+            try:
+                lines = self.load_lang(lang=lang).load_vocabulary_file(name) or []
+                phrases = [p for line in lines for p in line]
+            except Exception:  # no vocabulary for this language
+                phrases = []
+            self._voc_cache_by_lang[key] = phrases
+        return self._voc_cache_by_lang[key]
+
+    def _speak_dialog_in(self, lang: str, name: str, data: Optional[dict] = None):
+        """speak_dialog() in an explicit language: the comeback is spoken in
+        the language the utterance was classified in."""
+        data = data or {}
+        try:
+            utterance = self.load_lang(lang=lang).dialog_renderer.render(name, data)
+        except Exception as e:
+            LOG.error(f"good manners: no '{name}' dialog for {lang}: {e}")
+            return
+        self.speak(utterance, meta={"dialog": name, "data": data})
+
+    def _comebacks_for(self, session_id: str, verdict: Verdict) -> List[str]:
+        """Update the session's polite streak and decide what to say."""
+        now = time.monotonic()
+        with self._lock:
+            streak = self._streaks.setdefault(session_id, _PoliteStreak())
+            if verdict.rude:
+                streak.count = 0
+                comebacks = []
+                if verdict.insult:
+                    comebacks.append("said_insult")
+                if verdict.foul_words:
+                    comebacks.append("said_foul_language")
+                return comebacks
+            if not verdict.polite:
+                return []
+            if now - streak.last > self._setting("polite_timeout") * 60:
+                streak.count = 0
+            streak.count += 1
+            streak.last = now
+            if streak.count >= self._setting("polite_threshold"):
+                streak.count = 0
+                return ["was_polite"]
+            return []
+
+    # --- after the utterance ------------------------------------------------
+
+    def handle_utterance_handled(self, message: Message):
+        session_id = _session_id(message)
+        with self._lock:
+            # the next utterance is a new one even if its Message object
+            # happens to get the same id() as this one
+            self._last_seen.pop(session_id, None)
+            pending = self._pending.get(session_id)
+            if pending is None:
+                return
+            utterance_id = message.context.get("utterance_id")
+            if pending.utterance_id and utterance_id and pending.utterance_id != utterance_id:
+                return  # end marker of a different utterance
+            del self._pending[session_id]
+        for comeback in pending.comebacks:
+            if comeback == "said_foul_language":
+                self._speak_foul_words(pending.foul_words, pending.lang)
+            else:
+                self._speak_dialog_in(pending.lang, comeback)
+
+    def _speak_foul_words(self, words: List[str], lang: str):
+        if len(words) == 1:
+            self._speak_dialog_in(lang, "said_foul_word", {"foul_word": words[0]})
+            return
+        joiner = (self._vocabulary("and", lang) or ["and"])[0]
+        listed = f"{', '.join(words[:-1])} {joiner} {words[-1]}"
+        self._speak_dialog_in(lang, "said_foul_language", {"foul_words": listed})

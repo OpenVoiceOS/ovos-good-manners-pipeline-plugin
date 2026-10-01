@@ -62,6 +62,11 @@ DEFAULT_CONFIG = {
     "polite_threshold": 4,
     # minutes without a polite request before the count starts over
     "polite_timeout": 10,
+    # seconds after the utterance after which a comeback is no longer said:
+    # when ovos-core is busy (e.g. late common query answers on the
+    # synchronous stable core), the end marker can arrive so late that the
+    # comeback would land on top of the user's next request
+    "max_delay": 20,
 }
 
 DEFAULT_SESSION_ID = "default"
@@ -86,6 +91,7 @@ class _Pending:
     comebacks: List[str]
     foul_words: List[str]
     lang: str
+    observed_at: float = 0.0
 
 
 @dataclass
@@ -165,8 +171,10 @@ class GoodMannersPipeline(PipelinePlugin, OVOSAbstractApplication):
         with self._lock:
             if comebacks:
                 self._pending[session_id] = _Pending(
-                    utterance_id, comebacks, verdict.foul_words, lang)
+                    utterance_id, comebacks, verdict.foul_words, lang,
+                    observed_at=time.monotonic())
             else:
+                # a new utterance supersedes a comeback still waiting
                 self._pending.pop(session_id, None)
 
     def _classify(self, utterance: str, lang: str) -> Verdict:
@@ -244,6 +252,10 @@ class GoodMannersPipeline(PipelinePlugin, OVOSAbstractApplication):
             if pending.utterance_id and utterance_id and pending.utterance_id != utterance_id:
                 return  # end marker of a different utterance
             del self._pending[session_id]
+        age = time.monotonic() - pending.observed_at
+        if age > self._setting("max_delay"):
+            LOG.debug(f"good manners: dropping comeback, utterance was {age:.0f}s ago")
+            return
         for comeback in pending.comebacks:
             if comeback == "said_foul_language":
                 self._speak_foul_words(pending.foul_words, pending.lang)

@@ -1,12 +1,22 @@
+# Copyright 2018, JarbasAI
+# Copyright 2026, OpenVoiceOS
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#    http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 """
 OVOS Good Manners - pipeline plugin
 
 Originally a Mycroft skill by JarbasAI (2018), rewritten as an OVOS
 pipeline plugin.
-
-Licensed under the Apache License, Version 2.0.
-
----
 
 Reinforces good manners and reprimands foul language, without ever
 getting in the way of what the user actually asked for.

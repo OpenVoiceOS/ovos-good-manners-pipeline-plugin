@@ -71,3 +71,7 @@ English, German and Danish. A language needs `foul_language.voc`, `polite_words.
 - [@JarbasAl](https://github.com/JarbasAl), original skill
 - [@gras64](https://github.com/gras64), German translation
 - [@andlo](https://github.com/andlo)
+
+## License
+
+Apache 2.0, see [LICENSE.md](LICENSE.md).

@@ -1,6 +1,6 @@
 {
   "skill_id": "ovos-good-manners-pipeline-plugin.openvoiceos",
-  "source": "https://github.com/OpenVoiceOS/ovos-skill-good-manners",
+  "source": "https://github.com/OpenVoiceOS/ovos-good-manners-pipeline-plugin",
   "package_name": "ovos-good-manners-pipeline-plugin",
   "pip_spec": "ovos-good-manners-pipeline-plugin",
   "license": "Apache-2.0",
@@ -19,5 +19,5 @@
     "spaß",
     "pipeline"
   ],
-  "icon": "https://raw.githubusercontent.com/OpenVoiceOS/ovos-skill-good-manners/master/goodmanner.png"
+  "icon": "https://raw.githubusercontent.com/OpenVoiceOS/ovos-good-manners-pipeline-plugin/master/goodmanner.png"
 }

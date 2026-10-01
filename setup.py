@@ -3,7 +3,7 @@ from setuptools import setup
 from os import walk, path
 
 BASEDIR = path.abspath(path.dirname(__file__))
-URL = "https://github.com/OpenVoiceOS/ovos-skill-good-manners"
+URL = "https://github.com/OpenVoiceOS/ovos-good-manners-pipeline-plugin"
 PLUGIN_CLAZZ = "GoodMannersPipeline"  # needs to match __init__.py class name
 PYPI_NAME = "ovos-good-manners-pipeline-plugin"  # pip install PYPI_NAME
 PLUGIN_PKG = PYPI_NAME.replace("-", "_")

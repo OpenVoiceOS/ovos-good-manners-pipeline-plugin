@@ -12,7 +12,7 @@ An OVOS pipeline plugin that reinforces good manners and reprimands foul languag
 → "you have really good manners, i like you"
 ```
 
-> Originally a Mycroft skill by [@JarbasAl](https://github.com/JarbasAl) (2018). It is being rewritten as a pipeline plugin, see [#9](https://github.com/OpenVoiceOS/ovos-skill-good-manners/issues/9).
+> Originally a Mycroft skill by [@JarbasAl](https://github.com/JarbasAl) (2018). It is being rewritten as a pipeline plugin, see [#9](https://github.com/OpenVoiceOS/ovos-good-manners-pipeline-plugin/issues/9).
 
 ## Why manners matter
 

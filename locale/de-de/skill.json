@@ -1,0 +1,23 @@
+{
+  "skill_id": "ovos-good-manners-pipeline-plugin.openvoiceos",
+  "source": "https://github.com/OpenVoiceOS/ovos-skill-good-manners",
+  "package_name": "ovos-good-manners-pipeline-plugin",
+  "pip_spec": "ovos-good-manners-pipeline-plugin",
+  "license": "Apache-2.0",
+  "author": "OpenVoiceOS",
+  "name": "Gute Manieren",
+  "description": "Achtet darauf, wie du fragst, nicht nur was du fragst: lobt gute Manieren und tadelt Schimpfwörter, nachdem deine Anfrage wie gewohnt beantwortet wurde. Ein Pipeline-Plugin, das der Antwort nie im Weg steht.",
+  "examples": [
+    "Wie spät ist es, bitte?",
+    "Erzähl mir bitte einen Witz",
+    "Wenn es dir nichts ausmacht, wie ist das Wetter?"
+  ],
+  "tags": [
+    "manieren",
+    "höflichkeit",
+    "schimpfwörter",
+    "spaß",
+    "pipeline"
+  ],
+  "icon": "https://raw.githubusercontent.com/OpenVoiceOS/ovos-skill-good-manners/master/goodmanner.png"
+}

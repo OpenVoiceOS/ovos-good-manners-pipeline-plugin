@@ -1,0 +1,7 @@
+# a word that STARTS with one of these is foul language: Scheißwetter, Kackladen, Arschgeige
+# keep these to prefixes that are (almost) never the start of an ordinary word
+scheiß
+scheiss
+kack
+arsch
+drecks

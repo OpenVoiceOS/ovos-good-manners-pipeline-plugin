@@ -36,7 +36,16 @@ The plugin is a stage in ovos-core's intent pipeline that **observes but never m
 
 Intent probes (`intent.service.intent.get`) are ignored, and every session keeps its own polite streak, so on a HiveMind hub one client's manners don't affect another's.
 
-Classification is plain vocabulary matching (`locale/<lang>/foul_language.voc` and `polite_words.voc`). A trained politeness/insult classifier is planned.
+Classification is plain vocabulary matching, with three lists per language in `locale/<lang>/`:
+
+- `foul_language.voc` – ordinary swearing. The comeback names the word: *"shit is such an ugly word"*.
+- `foul_prefixes.voc` – for compounding languages: any word that *starts* with one of these is foul language too, so Danish *lortebil* and *pissekoldt* or German *Scheißwetter* are caught without listing every compound.
+- `slurs.voc` – slurs and derogatory terms about groups of people. The comeback never repeats the word: *"please don't use words like that"*.
+- `polite_words.voc` – polite phrases and thanks.
+
+Words people use in ordinary questions ("sex", "nude", "jesus", "bloody nose", "summa cum laude") are deliberately left out, so the plugin never scolds someone for asking about something.
+
+A trained politeness/insult classifier is planned.
 
 ## Install
 
@@ -76,12 +85,22 @@ Since the pipeline is chosen per session, a HiveMind client can enable or disabl
 
 ## Languages
 
-English, German and Danish. A language needs `foul_language.voc`, `polite_words.voc`, `and.voc` and the four `.dialog` files in `locale/<lang>/`.
+English, German and Danish. A language needs `foul_language.voc`, `foul_prefixes.voc` (may be empty), `slurs.voc`, `polite_words.voc`, `and.voc` and the five `.dialog` files in `locale/<lang>/`.
+
+### Word lists
+
+`foul_language.voc` and `slurs.voc` are built by `scripts/import_wordlists.py` from open word lists, with hand corrections per language in `scripts/overrides/<lang>.json` (`foul`, `slurs`, `remove`). Re-running the script keeps everything already in the `.voc` files, so hand-written entries are never lost.
+
+- **English** comes from [dsojevic/profanity-list](https://github.com/randolf/profanity-list) (MIT). It is tagged, so slurs (racial, LGBTQ, religious) are sorted out automatically.
+- **Other languages** start from [LDNOOBW](https://github.com/LDNOOBW/List-of-Dirty-Naughty-Obscene-and-Otherwise-Bad-Words) (CC-BY-4.0), which is untagged, so each language is sorted by hand in its override file.
+
+Untagged English lists such as [cuss](https://github.com/wooorm/cuss) and LDNOOBW's English list are not used: they mix in ethnic slurs (which would be said back), ordinary words and porn search terms. See [#12](https://github.com/OpenVoiceOS/ovos-good-manners-pipeline-plugin/issues/12).
 
 ## Credits
 
 - [@JarbasAl](https://github.com/JarbasAl), original skill
 - [@gras64](https://github.com/gras64), German translation
+- Word lists: [dsojevic/profanity-list](https://github.com/randolf/profanity-list) (MIT) and [LDNOOBW](https://github.com/LDNOOBW/List-of-Dirty-Naughty-Obscene-and-Otherwise-Bad-Words) (CC-BY-4.0, by Shutterstock)
 - [@andlo](https://github.com/andlo)
 
 ## License

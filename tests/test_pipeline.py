@@ -5,8 +5,8 @@ import pytest
 
 from conftest import REPO_ROOT, handled_message, say, utterance_message
 
-DIALOGS = ("said_foul_language", "said_foul_word", "said_insult", "was_polite")
-VOCABS = ("and", "foul_language", "polite_words")
+DIALOGS = ("said_foul_language", "said_foul_word", "said_insult", "said_slur", "was_polite")
+VOCABS = ("and", "foul_language", "foul_prefixes", "polite_words", "slurs")
 
 
 def test_never_claims_an_utterance(plugin):
@@ -152,3 +152,54 @@ def test_thanks_counts_as_good_manners(plugin, lang, thanks):
     say(plugin, f"{thanks}", lang=lang)
     say(plugin, f"{thanks}", lang=lang)
     assert plugin.spoken == [("was_polite", {})]
+
+
+def test_slur_is_never_repeated(plugin):
+    say(plugin, "you are retarded")
+    assert plugin.spoken == [("said_slur", {})]
+
+
+def test_slur_wins_over_foul_language(plugin):
+    say(plugin, "shut up you fucking retard")
+    assert plugin.spoken == [("said_slur", {})]
+
+
+def test_longest_phrase_wins(plugin):
+    say(plugin, "you motherfucker")
+    assert plugin.spoken == [("said_foul_word", {"foul_word": "motherfucker"})]
+
+
+@pytest.mark.parametrize("text", [
+    "who was jesus christ", "play octopussy", "summa cum laude", "what is sex education",
+    "how do i fix a bloody nose", "my gay friend is coming over", "teach me guitar fingering",
+])
+def test_ordinary_questions_are_left_alone(plugin, text):
+    say(plugin, text)
+    assert plugin.spoken == []
+
+
+@pytest.mark.parametrize("lang,text,word", [
+    ("da-DK", "start min lortebil", "lortebil"),
+    ("da-DK", "det er pissekoldt i dag", "pissekoldt"),
+    ("de-DE", "was für ein scheißwetter", "scheißwetter"),
+    ("en-US", "you fuckwit", "fuckwit"),
+])
+def test_compound_swear_words(plugin, lang, text, word):
+    say(plugin, text, lang=lang)
+    assert plugin.spoken == [("said_foul_word", {"foul_word": word})]
+
+
+@pytest.mark.parametrize("lang,text", [
+    ("da-DK", "fortæl en røverhistorie"),
+    ("da-DK", "maden er lidt pikant"),
+    ("de-DE", "erkläre das ficksche gesetz"),
+    ("en-US", "what does my assistant do"),
+])
+def test_prefixes_leave_ordinary_words_alone(plugin, lang, text):
+    say(plugin, text, lang=lang)
+    assert plugin.spoken == []
+
+
+def test_compound_and_listed_word_are_reported_once(plugin):
+    say(plugin, "lort lort", lang="da-DK")
+    assert plugin.spoken == [("said_foul_word", {"foul_word": "lort"})]

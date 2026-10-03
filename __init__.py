@@ -87,11 +87,12 @@ class Verdict:
     """What _classify() found in one utterance."""
     polite: bool = False
     insult: bool = False
+    slur: bool = False  # never said back, unlike foul_words
     foul_words: List[str] = field(default_factory=list)
 
     @property
     def rude(self) -> bool:
-        return self.insult or bool(self.foul_words)
+        return self.insult or self.slur or bool(self.foul_words)
 
 
 @dataclass
@@ -119,13 +120,25 @@ def _session_id(message: Optional[Message]) -> str:
         return DEFAULT_SESSION_ID
 
 
-def _contains_phrase(utterance: str, phrase: str) -> bool:
-    """Whole-word, case-insensitive match. Lookarounds instead of \\b so
-    phrases that start or end with symbols ("@$$") match as well."""
-    phrase = phrase.strip().lower()
-    if not phrase:
-        return False
-    return re.search(rf"(?<!\w){re.escape(phrase)}(?!\w)", utterance) is not None
+def _phrase_pattern(phrases: List[str]) -> Optional["re.Pattern"]:
+    """One regex for a whole vocabulary: whole-word, case-insensitive.
+    Lookarounds instead of \\b so phrases that start or end with symbols
+    ("@$$") match as well. Longest first, so "motherfucker" wins over
+    "fucker"."""
+    phrases = sorted({p.strip().lower() for p in phrases if p.strip()}, key=len, reverse=True)
+    if not phrases:
+        return None
+    return re.compile(r"(?<!\w)(?:" + "|".join(map(re.escape, phrases)) + r")(?!\w)")
+
+
+def _prefix_pattern(prefixes: List[str]) -> Optional["re.Pattern"]:
+    """Whole words that START with one of the prefixes. Danish, German and
+    other compounding languages build swear words on the fly ("lortebil",
+    "pissekoldt", "Scheißwetter"), which no word list can enumerate."""
+    prefixes = sorted({p.strip().lower() for p in prefixes if p.strip()}, key=len, reverse=True)
+    if not prefixes:
+        return None
+    return re.compile(r"(?<!\w)(?:" + "|".join(map(re.escape, prefixes)) + r")\w*")
 
 
 class GoodMannersPipeline(PipelinePlugin, OVOSAbstractApplication):
@@ -148,6 +161,7 @@ class GoodMannersPipeline(PipelinePlugin, OVOSAbstractApplication):
         # several languages (intents.multilingual_matching)
         self._last_seen: Dict[str, object] = {}
         self._voc_cache_by_lang: Dict[tuple, List[str]] = {}
+        self._pattern_cache: Dict[tuple, Optional[re.Pattern]] = {}
 
     def _setting(self, key):
         return (self.config or {}).get(key, DEFAULT_CONFIG[key])
@@ -192,11 +206,23 @@ class GoodMannersPipeline(PipelinePlugin, OVOSAbstractApplication):
         goes later; vocabulary matching stays as the fallback for
         languages the classifier does not cover."""
         text = utterance.lower()
-        foul = [w for w in self._vocabulary("foul_language", lang)
-                if _contains_phrase(text, w)]
-        polite = any(_contains_phrase(text, w)
-                     for w in self._vocabulary("polite_words", lang))
-        return Verdict(polite=polite and not foul, insult=False, foul_words=foul)
+        slur = self._pattern("slurs", lang)
+        foul = self._pattern("foul_language", lang)
+        polite = self._pattern("polite_words", lang)
+        is_slur = bool(slur and slur.search(text))
+        prefixed = self._pattern("foul_prefixes", lang, _prefix_pattern)
+        found = (foul.findall(text) if foul else []) + (prefixed.findall(text) if prefixed else [])
+        foul_words = list(dict.fromkeys(found))
+        is_polite = bool(polite and polite.search(text))
+        rude = is_slur or bool(foul_words)
+        return Verdict(polite=is_polite and not rude, insult=False,
+                       slur=is_slur, foul_words=foul_words)
+
+    def _pattern(self, name: str, lang: str, build=None) -> Optional[re.Pattern]:
+        key = (lang.lower(), name)
+        if key not in self._pattern_cache:
+            self._pattern_cache[key] = (build or _phrase_pattern)(self._vocabulary(name, lang))
+        return self._pattern_cache[key]
 
     def _vocabulary(self, name: str, lang: str) -> List[str]:
         """The phrases of locale/<lang>/<name>.voc. Loaded through
@@ -230,12 +256,13 @@ class GoodMannersPipeline(PipelinePlugin, OVOSAbstractApplication):
             streak = self._streaks.setdefault(session_id, _PoliteStreak())
             if verdict.rude:
                 streak.count = 0
-                comebacks = []
+                # one comeback per utterance; a slur is the most serious and
+                # is answered without repeating anything that was said
+                if verdict.slur:
+                    return ["said_slur"]
                 if verdict.insult:
-                    comebacks.append("said_insult")
-                if verdict.foul_words:
-                    comebacks.append("said_foul_language")
-                return comebacks
+                    return ["said_insult"]
+                return ["said_foul_language"]
             if not verdict.polite:
                 return []
             if now - streak.last > self._setting("polite_timeout") * 60:

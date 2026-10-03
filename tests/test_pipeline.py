@@ -3,7 +3,7 @@ from pathlib import Path
 
 import pytest
 
-from conftest import REPO_ROOT, handled_message, say, utterance_message
+from conftest import PACKAGE_ROOT as REPO_ROOT, handled_message, say, utterance_message
 
 DIALOGS = ("said_foul_language", "said_foul_word", "said_insult", "said_slur", "was_polite")
 VOCABS = ("and", "foul_language", "foul_prefixes", "polite_words", "slurs")

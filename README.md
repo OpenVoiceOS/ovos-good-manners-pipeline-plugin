@@ -96,6 +96,15 @@ English, German and Danish. A language needs `foul_language.voc`, `foul_prefixes
 
 Untagged English lists such as [cuss](https://github.com/wooorm/cuss) and LDNOOBW's English list are not used: they mix in ethnic slurs (which would be said back), ordinary words and porn search terms. See [#12](https://github.com/OpenVoiceOS/ovos-good-manners-pipeline-plugin/issues/12).
 
+## Tests
+
+Besides the unit tests, `tests/golden/<lang>.jsonl` is a golden corpus: one utterance per line with what the plugin should find in it (`none`, `polite`, `slur`, or `foul` with the words). The `none` rows are as important as the rest: ordinary requests and look-alike words (*summa cum laude*, *røverhistorie*, *Schmuck*) that must never be reprimanded. Adding or improving a language is just adding lines – no code needed.
+
+```json
+{"utterance": "could you turn off the lights", "expect": "polite"}
+{"utterance": "fuck this shit", "expect": "foul", "foul_words": ["fuck", "shit"]}
+```
+
 ## Credits
 
 - [@JarbasAl](https://github.com/JarbasAl), original skill

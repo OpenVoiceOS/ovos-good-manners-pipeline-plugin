@@ -36,7 +36,7 @@ The plugin is a stage in ovos-core's intent pipeline that **observes but never m
 
 Intent probes (`intent.service.intent.get`) are ignored, and every session keeps its own polite streak, so on a HiveMind hub one client's manners don't affect another's.
 
-Classification is plain vocabulary matching, with three lists per language in `locale/<lang>/`:
+Classification is plain vocabulary matching, with three lists per language in `ovos_good_manners_pipeline_plugin/locale/<lang>/`:
 
 - `foul_language.voc` – ordinary swearing. The comeback names the word: *"shit is such an ugly word"*.
 - `foul_prefixes.voc` – for compounding languages: any word that *starts* with one of these is foul language too, so Danish *lortebil* and *pissekoldt* or German *Scheißwetter* are caught without listing every compound.
@@ -85,7 +85,7 @@ Since the pipeline is chosen per session, a HiveMind client can enable or disabl
 
 ## Languages
 
-English, German and Danish. A language needs `foul_language.voc`, `foul_prefixes.voc` (may be empty), `slurs.voc`, `polite_words.voc`, `and.voc` and the five `.dialog` files in `locale/<lang>/`.
+English, German and Danish. A language needs `foul_language.voc`, `foul_prefixes.voc` (may be empty), `slurs.voc`, `polite_words.voc`, `and.voc` and the five `.dialog` files in `ovos_good_manners_pipeline_plugin/locale/<lang>/`.
 
 ### Word lists
 

@@ -1,5 +1,4 @@
 """Shared fixtures for the good manners pipeline plugin tests."""
-import importlib.util
 import sys
 from pathlib import Path
 
@@ -8,10 +7,11 @@ from ovos_bus_client.message import Message
 from ovos_utils.fakebus import FakeBus
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-_spec = importlib.util.spec_from_file_location("good_manners_pipeline", REPO_ROOT / "__init__.py")
-module = importlib.util.module_from_spec(_spec)
-sys.modules[_spec.name] = module
-_spec.loader.exec_module(module)
+PACKAGE_ROOT = REPO_ROOT / "ovos_good_manners_pipeline_plugin"
+sys.path.insert(0, str(REPO_ROOT))
+
+from ovos_good_manners_pipeline_plugin import opm as module  # noqa: E402
+sys.modules["good_manners_pipeline"] = module
 
 GoodMannersPipeline = module.GoodMannersPipeline
 

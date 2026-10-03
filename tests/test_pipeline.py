@@ -203,3 +203,30 @@ def test_prefixes_leave_ordinary_words_alone(plugin, lang, text):
 def test_compound_and_listed_word_are_reported_once(plugin):
     say(plugin, "lort lort", lang="da-DK")
     assert plugin.spoken == [("said_foul_word", {"foul_word": "lort"})]
+
+
+@pytest.mark.parametrize("lang,text", [
+    ("en-US", "could you tell me the time"),
+    ("en-US", "sorry, what was that"),
+    ("en-US", "would you mind turning off the lights"),
+    ("de-DE", "könntest du das licht ausmachen"),
+    ("de-DE", "entschuldigung, wie spät ist es"),
+    ("da-DK", "vil du ikke lige tænde lyset"),
+    ("da-DK", "må jeg bede om vejrudsigten"),
+    ("da-DK", "undskyld, hvad er klokken"),
+])
+def test_polite_strategies(plugin, lang, text):
+    say(plugin, text, lang=lang)
+    say(plugin, text, lang=lang)
+    assert plugin.spoken == [("was_polite", {})]
+
+
+@pytest.mark.parametrize("lang,text", [
+    ("en-US", "can you tell me the time"),
+    ("de-DE", "kannst du das licht ausmachen"),
+    ("da-DK", "kan du tænde lyset"),
+])
+def test_plain_commands_are_not_polite(plugin, lang, text):
+    say(plugin, text, lang=lang)
+    say(plugin, text, lang=lang)
+    assert plugin.spoken == []

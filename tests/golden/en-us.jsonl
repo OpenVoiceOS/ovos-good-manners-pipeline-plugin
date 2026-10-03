@@ -1,0 +1,40 @@
+{"utterance": "what time is it", "expect": "none"}
+{"utterance": "set a timer for ten minutes", "expect": "none"}
+{"utterance": "what's the weather like tomorrow", "expect": "none"}
+{"utterance": "can you tell me a joke", "expect": "none"}
+{"utterance": "can you turn off the lights", "expect": "none"}
+{"utterance": "play some music", "expect": "none"}
+{"utterance": "who was jesus christ", "expect": "none"}
+{"utterance": "what is sex education", "expect": "none"}
+{"utterance": "how do i stop a bloody nose", "expect": "none"}
+{"utterance": "my gay friend is coming over", "expect": "none"}
+{"utterance": "she graduated summa cum laude", "expect": "none"}
+{"utterance": "teach me guitar fingering", "expect": "none"}
+{"utterance": "play octopussy", "expect": "none"}
+{"utterance": "what does my assistant do", "expect": "none"}
+{"utterance": "how do i snatch a deal on ebay", "expect": "none"}
+{"utterance": "is hell's kitchen on tonight", "expect": "none"}
+{"utterance": "how many classes are there", "expect": "none"}
+{"utterance": "tell me about the passage of time", "expect": "none"}
+{"utterance": "please tell me a joke", "expect": "polite"}
+{"utterance": "could you turn off the lights", "expect": "polite"}
+{"utterance": "would you mind setting a timer", "expect": "polite"}
+{"utterance": "thank you", "expect": "polite"}
+{"utterance": "thanks a lot", "expect": "polite"}
+{"utterance": "sorry, what was that", "expect": "polite"}
+{"utterance": "excuse me, what time is it", "expect": "polite"}
+{"utterance": "good morning", "expect": "polite"}
+{"utterance": "if you don't mind, play some music", "expect": "polite"}
+{"utterance": "i was wondering if you could help", "expect": "polite"}
+{"utterance": "what the fuck is the time", "expect": "foul", "foul_words": ["fuck"]}
+{"utterance": "this is bullshit", "expect": "foul", "foul_words": ["bullshit"]}
+{"utterance": "shut up you asshole", "expect": "foul", "foul_words": ["asshole"]}
+{"utterance": "you motherfucker", "expect": "foul", "foul_words": ["motherfucker"]}
+{"utterance": "what a fuckwit", "expect": "foul", "foul_words": ["fuckwit"]}
+{"utterance": "oh shit i forgot", "expect": "foul", "foul_words": ["shit"]}
+{"utterance": "damn it", "expect": "foul", "foul_words": ["damn"]}
+{"utterance": "this is crap", "expect": "foul", "foul_words": ["crap"]}
+{"utterance": "fuck this shit", "expect": "foul", "foul_words": ["fuck", "shit"]}
+{"utterance": "please play the fucking song", "expect": "foul", "foul_words": ["fucking"]}
+{"utterance": "you are retarded", "expect": "slur"}
+{"utterance": "shut up you fucking retard", "expect": "slur"}

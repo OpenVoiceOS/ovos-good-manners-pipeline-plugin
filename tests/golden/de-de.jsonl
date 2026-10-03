@@ -1,0 +1,21 @@
+{"utterance": "wie spät ist es", "expect": "none"}
+{"utterance": "stell einen timer auf zehn minuten", "expect": "none"}
+{"utterance": "wie wird das wetter morgen", "expect": "none"}
+{"utterance": "kannst du einen witz erzählen", "expect": "none"}
+{"utterance": "erkläre das ficksche gesetz", "expect": "none"}
+{"utterance": "wo kaufe ich schmuck", "expect": "none"}
+{"utterance": "was frisst ein affe", "expect": "none"}
+{"utterance": "wann wird der abfall abgeholt", "expect": "none"}
+{"utterance": "wie viele möpse hat sie", "expect": "none"}
+{"utterance": "bitte erzähl mir einen witz", "expect": "polite"}
+{"utterance": "könntest du das licht ausmachen", "expect": "polite"}
+{"utterance": "danke schön", "expect": "polite"}
+{"utterance": "entschuldigung, wie spät ist es", "expect": "polite"}
+{"utterance": "guten morgen", "expect": "polite"}
+{"utterance": "vielen dank", "expect": "polite"}
+{"utterance": "was für ein scheißwetter", "expect": "foul", "foul_words": ["scheißwetter"]}
+{"utterance": "halt die fresse du arschloch", "expect": "foul", "foul_words": ["arschloch"]}
+{"utterance": "so eine scheiße", "expect": "foul", "foul_words": ["scheiße"]}
+{"utterance": "du hurensohn", "expect": "foul", "foul_words": ["hurensohn"]}
+{"utterance": "verdammte drecksarbeit", "expect": "foul", "foul_words": ["drecksarbeit"]}
+{"utterance": "du schwuchtel", "expect": "slur"}

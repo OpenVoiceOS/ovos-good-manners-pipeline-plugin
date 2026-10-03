@@ -1,0 +1,37 @@
+{"utterance": "hvad er klokken", "expect": "none"}
+{"utterance": "sæt en timer på ti minutter", "expect": "none"}
+{"utterance": "hvordan bliver vejret i morgen", "expect": "none"}
+{"utterance": "kan du fortælle en vittighed", "expect": "none"}
+{"utterance": "kan du tænde lyset", "expect": "none"}
+{"utterance": "spil noget musik", "expect": "none"}
+{"utterance": "fortæl en røverhistorie", "expect": "none"}
+{"utterance": "maden er lidt pikant", "expect": "none"}
+{"utterance": "hvor mange svin er der i danmark", "expect": "none"}
+{"utterance": "klap i hænderne", "expect": "none"}
+{"utterance": "hvad hedder hovedstaden i mongoliet", "expect": "none"}
+{"utterance": "skidt være med det", "expect": "none"}
+{"utterance": "hvad er homo sapiens", "expect": "none"}
+{"utterance": "hvordan staver man til spade", "expect": "none"}
+{"utterance": "hvad er satanisme", "expect": "none"}
+{"utterance": "vær sød at tænde lyset", "expect": "polite"}
+{"utterance": "vil du ikke lige sige hvad klokken er", "expect": "polite"}
+{"utterance": "må jeg bede om vejrudsigten", "expect": "polite"}
+{"utterance": "tak", "expect": "polite"}
+{"utterance": "mange tak", "expect": "polite"}
+{"utterance": "tusind tak for hjælpen", "expect": "polite"}
+{"utterance": "undskyld, hvad er klokken", "expect": "polite"}
+{"utterance": "godmorgen", "expect": "polite"}
+{"utterance": "kunne du spille noget musik", "expect": "polite"}
+{"utterance": "hvis du ikke har noget imod det, så sluk lyset", "expect": "polite"}
+{"utterance": "hvad fanden er klokken", "expect": "foul", "foul_words": ["fanden"]}
+{"utterance": "for helvede da", "expect": "foul", "foul_words": ["for helvede da"]}
+{"utterance": "sikke noget lort", "expect": "foul", "foul_words": ["lort"]}
+{"utterance": "start min lortebil", "expect": "foul", "foul_words": ["lortebil"]}
+{"utterance": "det er pissekoldt i dag", "expect": "foul", "foul_words": ["pissekoldt"]}
+{"utterance": "hold kæft", "expect": "foul", "foul_words": ["hold kæft"]}
+{"utterance": "din kraftidiot", "expect": "foul", "foul_words": ["kraftidiot"]}
+{"utterance": "rend mig i røven", "expect": "foul", "foul_words": ["rend mig i røven"]}
+{"utterance": "sikke en møgunge", "expect": "foul", "foul_words": ["møgunge"]}
+{"utterance": "det er skidegodt", "expect": "foul", "foul_words": ["skidegodt"]}
+{"utterance": "din spasser", "expect": "slur"}
+{"utterance": "du er en perker", "expect": "slur"}

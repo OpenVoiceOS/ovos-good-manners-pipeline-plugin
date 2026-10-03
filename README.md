@@ -41,7 +41,7 @@ Classification is plain vocabulary matching, with three lists per language in `l
 - `foul_language.voc` – ordinary swearing. The comeback names the word: *"shit is such an ugly word"*.
 - `foul_prefixes.voc` – for compounding languages: any word that *starts* with one of these is foul language too, so Danish *lortebil* and *pissekoldt* or German *Scheißwetter* are caught without listing every compound.
 - `slurs.voc` – slurs and derogatory terms about groups of people. The comeback never repeats the word: *"please don't use words like that"*.
-- `polite_words.voc` – polite phrases and thanks.
+- `polite_words.voc` – polite phrases, written by hand after the [Stanford politeness strategies](https://github.com/sudhof/politeness): please, thanks, apologies, *could you* / *would you*, deference and greetings. Plain *can you* is not counted, since that is how almost every command starts.
 
 Words people use in ordinary questions ("sex", "nude", "jesus", "bloody nose", "summa cum laude") are deliberately left out, so the plugin never scolds someone for asking about something.
 

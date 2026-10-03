@@ -1,13 +1,43 @@
+# polite phrases, after the Stanford politeness strategies (Danescu-Niculescu-Mizil et al. 2013):
+# please, gratitude, apology, counterfactual modals ("could you", "would you"), deference, greetings.
+# "can you" / "will you" are left out: they are how almost every command starts.
 please
+kindly
 if you don't mind
 if you do not mind
 if you wouldn't mind
 if you would not mind
+would you mind
+do you mind
+if it's not too much trouble
+if it isn't too much trouble
 if you would be so good
-kindly
+if you would be so kind
+would you be so kind
 have the goodness
+could you
+could you possibly
+would you
+would you be able to
+would it be possible
+i was wondering if
+i would appreciate
+i'd appreciate
 thank you
 thanks
 thank you very much
 thanks a lot
 many thanks
+thanks so much
+thank you so much
+much appreciated
+i appreciate it
+cheers
+sorry
+sorry to bother you
+excuse me
+pardon me
+my apologies
+good morning
+good afternoon
+good evening

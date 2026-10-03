@@ -44,7 +44,7 @@ import urllib.request
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-LOCALE = ROOT / "locale"
+LOCALE = ROOT / "ovos_good_manners_pipeline_plugin" / "locale"
 OVERRIDES = Path(__file__).resolve().parent / "overrides"
 
 DSOJEVIC_EN = "https://raw.githubusercontent.com/randolf/profanity-list/main/en.json"

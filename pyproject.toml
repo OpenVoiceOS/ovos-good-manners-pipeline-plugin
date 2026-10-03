@@ -1,0 +1,55 @@
+[build-system]
+requires = ["setuptools>=61", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ovos-good-manners-pipeline-plugin"
+dynamic = ["version"]
+description = "OVOS pipeline plugin that reinforces good manners and reprimands foul language"
+readme = "README.md"
+license = {text = "Apache-2.0"}
+authors = [
+    {name = "OpenVoiceOS", email = "jarbasai@mailfence.com"}
+]
+requires-python = ">=3.9"
+keywords = ["ovos", "pipeline", "plugin", "voice assistant", "manners", "politeness", "profanity"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: End Users/Desktop",
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python :: 3",
+    "Topic :: Multimedia :: Sound/Audio :: Speech",
+]
+dependencies = [
+    "ovos-plugin-manager>=2.0.0,<3.0.0",
+    "ovos-workshop>=7.0.0,<10.0.0",
+    "ovos-bus-client>=1.0.0,<3.0.0",
+    "ovos-utils>=0.8.0,<1.0.0",
+]
+
+[project.optional-dependencies]
+test = [
+    "pytest>=5.2.4",
+    "pytest-cov>=2.8.1",
+    "flake8>=3.7.9",
+]
+
+[project.urls]
+Homepage = "https://github.com/OpenVoiceOS/ovos-good-manners-pipeline-plugin"
+"Bug Tracker" = "https://github.com/OpenVoiceOS/ovos-good-manners-pipeline-plugin/issues"
+
+[project.entry-points."opm.pipeline"]
+"ovos-good-manners-pipeline-plugin" = "ovos_good_manners_pipeline_plugin.opm:GoodMannersPipeline"
+
+[tool.setuptools.dynamic]
+version = {attr = "ovos_good_manners_pipeline_plugin.version.__version__"}
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["ovos_good_manners_pipeline_plugin*"]
+
+[tool.setuptools.package-data]
+ovos_good_manners_pipeline_plugin = [
+    "*.json",
+    "locale/**/*",
+]

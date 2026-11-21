@@ -1,0 +1,48 @@
+{
+  "_comment": "Overheard phrases. 'en' is the base list and is listened for in every language (people say 'what the fuck' everywhere); each language adds its own. Long phrases on purpose: few phones = many false hits. No slurs: a false accusation there is too ugly. 'lookalikes' are innocent sentences that sound close and must NOT trigger.",
+  "en": {
+    "espeak": "en-us",
+    "phrases": ["what the fuck", "fuck you", "motherfucker", "fucking hell", "oh shit", "bullshit", "son of a bitch", "god damn it", "shut the fuck up"],
+    "lookalikes": ["what the fun is that", "fork you over", "my mother fixed her", "the funky bell rang", "oh shift it a bit", "a bull shed in the field", "the sun of a beach day", "got them in it yesterday", "shut the front door"]
+  },
+  "da": {
+    "espeak": "da",
+    "phrases": ["av for helvede", "for fanden", "op i røven", "hold kæft mand", "pis og lort", "fandens også"],
+    "lookalikes": ["vi kørte for hele vejen", "jeg fandt den i skuffen", "han kravlede op i rummet", "hold kæden stram", "pisk og rør", "fandt den også"]
+  },
+  "de": {
+    "espeak": "de",
+    "phrases": ["verdammte scheiße", "leck mich am arsch", "halt die klappe", "so ein arschloch", "verdammt noch mal"],
+    "lookalikes": ["eine verdammte Scheibe Brot", "leg mich am Abend hin", "halt die Kappe fest", "so ein Ascheloch im Ofen", "verdampft noch mal"]
+  },
+  "sv": {
+    "espeak": "sv",
+    "phrases": ["jävla skit", "fan också", "dra åt helvete", "för helvete"],
+    "lookalikes": ["javas skidor är bra", "fann också", "dra åt helgen", "för hela vägen"]
+  },
+  "nb": {
+    "espeak": "nb",
+    "phrases": ["for faen", "dra til helvete", "jævla dritt", "faen i helvete"],
+    "lookalikes": ["for fanen", "dra til Helleland", "jevnlig drift", "fanen i hellet"]
+  },
+  "nl": {
+    "espeak": "nl",
+    "phrases": ["godverdomme", "wat een klootzak", "kut zooi", "verdomme nog aan toe"],
+    "lookalikes": ["god verdoemt", "wat een klootjesvolk", "kort zo", "ver domme nog aan toe"]
+  },
+  "fr": {
+    "espeak": "fr-fr",
+    "phrases": ["putain de merde", "merde alors", "ta gueule", "va te faire foutre", "quel connard"],
+    "lookalikes": ["putain de mère", "mer de alors", "ta gueule de bois", "va te faire couper", "quel canard"]
+  },
+  "es": {
+    "espeak": "es",
+    "phrases": ["me cago en la leche", "joder tío", "hijo de puta", "vete a la mierda", "qué coño"],
+    "lookalikes": ["me caigo en la leche", "joven tío", "hijo de Pura", "vete a la merienda", "qué coche"]
+  },
+  "it": {
+    "espeak": "it",
+    "phrases": ["porca miseria", "vaffanculo", "che cazzo", "porca puttana"],
+    "lookalikes": ["porta miseria", "vai al fan club", "che cassa", "porta puntata"]
+  }
+}

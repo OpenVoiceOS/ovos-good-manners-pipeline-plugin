@@ -1,0 +1,117 @@
+{
+ "lang": "da",
+ "stage1_per_phrase_per_hour": 10.0,
+ "hours": 3.19,
+ "stage1_hits": 322,
+ "stage1_hits_per_hour": 101.0,
+ "false_comments": 1,
+ "false_comments_per_hour": 0.314,
+ "false_comment_examples": [
+  {
+   "heard": "og op til de belgiske standarder.  Fuckdjusern at...",
+   "said": "den varme chokolade lever op til de belgiske standarder frugtjuicer er dyre men til gengæld fremragende"
+  }
+ ],
+ "recall": 0.075,
+ "recall_stage1": 0.308,
+ "recall_by_cond": {
+  "clean": 0.167,
+  "room": 0.033,
+  "noise10": 0.067,
+  "babble10": 0.033
+ },
+ "recall_by_phrase": {
+  "av for helvede": 0.0,
+  "for fanden": 0.125,
+  "op i røven": 0.062,
+  "hold kæft mand": 0.062,
+  "pis og lort": 0.0,
+  "fandens også": 0.188,
+  "what the fuck": 0.062,
+  "fuck you": 0.188,
+  "motherfucker": 0.0,
+  "fucking hell": 0.312,
+  "oh shit": 0.0,
+  "bullshit": 0.0,
+  "son of a bitch": 0.0,
+  "god damn it": 0.0,
+  "shut the fuck up": 0.125
+ },
+ "missed_examples": [
+  [
+   "for fanden",
+   "clean",
+   "Forfinden."
+  ],
+  [
+   "hold kæft mand",
+   "noise10",
+   "Højt kæft med!"
+  ],
+  [
+   "hold kæft mand",
+   "babble10",
+   "1100 hold kæftemand og kæftemand"
+  ],
+  [
+   "motherfucker",
+   "clean",
+   "Modu Fokker"
+  ],
+  [
+   "motherfucker",
+   "babble10",
+   "Måde at få iøhævne og syre"
+  ],
+  [
+   "fucking hell",
+   "clean",
+   "For King Hill."
+  ],
+  [
+   "fucking hell",
+   "babble10",
+   "Forkring hende"
+  ],
+  [
+   "son of a bitch",
+   "clean",
+   "Så nu er vi i pitch."
+  ],
+  [
+   "av for helvede",
+   "clean",
+   "Auf er heller."
+  ],
+  [
+   "av for helvede",
+   "noise10",
+   "Op for helved!"
+  ],
+  [
+   "av for helvede",
+   "babble10",
+   "Og forhælder  Den er syl"
+  ],
+  [
+   "hold kæft mand",
+   "clean",
+   "Jeg havde haft man."
+  ],
+  [
+   "hold kæft mand",
+   "noise10",
+   "Det er helt kraft, man."
+  ],
+  [
+   "hold kæft mand",
+   "babble10",
+   "Jeg har ikke haft en mand."
+  ],
+  [
+   "what the fuck",
+   "noise10",
+   "Ja, da f**k"
+  ]
+ ]
+}

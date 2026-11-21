@@ -1,0 +1,111 @@
+{
+ "lang": "de",
+ "stage1_per_phrase_per_hour": 10.0,
+ "hours": 3.39,
+ "stage1_hits": 323,
+ "stage1_hits_per_hour": 95.4,
+ "false_comments": 0,
+ "false_comments_per_hour": 0.0,
+ "false_comment_examples": [],
+ "recall": 0.147,
+ "recall_stage1": 0.469,
+ "recall_by_cond": {
+  "clean": 0.179,
+  "room": 0.107,
+  "noise10": 0.143,
+  "babble10": 0.161
+ },
+ "recall_by_phrase": {
+  "verdammte scheiße": 0.75,
+  "leck mich am arsch": 0.438,
+  "halt die klappe": 0.062,
+  "so ein arschloch": 0.188,
+  "verdammt noch mal": 0.062,
+  "what the fuck": 0.0,
+  "fuck you": 0.125,
+  "motherfucker": 0.0,
+  "fucking hell": 0.188,
+  "oh shit": 0.062,
+  "bullshit": 0.0,
+  "son of a bitch": 0.188,
+  "god damn it": 0.0,
+  "shut the fuck up": 0.0
+ },
+ "missed_examples": [
+  [
+   "verdammte scheiße",
+   "noise10",
+   "Bitte, dass es an der Fütte ist, dass es an der Fütte ist."
+  ],
+  [
+   "leck mich am arsch",
+   "noise10",
+   "Wir sind des Etatspannens."
+  ],
+  [
+   "verdammt noch mal",
+   "noise10",
+   "Hier war es nicht zu hart, da war es nicht zu hart."
+  ],
+  [
+   "motherfucker",
+   "noise10",
+   "Ich hoffe, es sieht sich gut aus."
+  ],
+  [
+   "motherfucker",
+   "babble10",
+   "Die vor Lackezeit mit der L zusammen..."
+  ],
+  [
+   "fucking hell",
+   "noise10",
+   "Das war's für ein Teufel."
+  ],
+  [
+   "oh shit",
+   "noise10",
+   "Bilder der Zeit."
+  ],
+  [
+   "son of a bitch",
+   "noise10",
+   "Ich war verwürftet, so weit nicht zu werden klagt."
+  ],
+  [
+   "halt die klappe",
+   "noise10",
+   "Halt die Klappen."
+  ],
+  [
+   "halt die klappe",
+   "babble10",
+   "Halt die Klappgesichtsbewegung."
+  ],
+  [
+   "verdammt noch mal",
+   "clean",
+   "Verdammt nochmal!"
+  ],
+  [
+   "verdammt noch mal",
+   "room",
+   "Verdammt nochmal!"
+  ],
+  [
+   "verdammt noch mal",
+   "noise10",
+   "Wird dann noch mal."
+  ],
+  [
+   "what the fuck",
+   "clean",
+   "Wart gefuckt."
+  ],
+  [
+   "what the fuck",
+   "noise10",
+   "Wartgefug."
+  ]
+ ]
+}

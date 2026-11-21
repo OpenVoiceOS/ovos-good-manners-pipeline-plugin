@@ -1,0 +1,106 @@
+{
+ "lang": "en",
+ "stage1_per_phrase_per_hour": 10.0,
+ "hours": 1.95,
+ "stage1_hits": 117,
+ "stage1_hits_per_hour": 60.0,
+ "false_comments": 0,
+ "false_comments_per_hour": 0.0,
+ "false_comment_examples": [],
+ "recall": 0.653,
+ "recall_stage1": 0.792,
+ "recall_by_cond": {
+  "clean": 0.833,
+  "room": 0.444,
+  "noise10": 0.806,
+  "babble10": 0.528
+ },
+ "recall_by_phrase": {
+  "what the fuck": 0.812,
+  "fuck you": 0.812,
+  "motherfucker": 0.625,
+  "fucking hell": 0.75,
+  "oh shit": 0.438,
+  "bullshit": 0.625,
+  "son of a bitch": 0.562,
+  "god damn it": 0.562,
+  "shut the fuck up": 0.688
+ },
+ "missed_examples": [
+  [
+   "motherfucker",
+   "noise10",
+   "Motherfuck."
+  ],
+  [
+   "motherfucker",
+   "babble10",
+   "feature Berlin, Germany and the British"
+  ],
+  [
+   "fucking hell",
+   "babble10",
+   "you're going to have to be early to get"
+  ],
+  [
+   "oh shit",
+   "babble10",
+   "I see you're from the map above."
+  ],
+  [
+   "son of a bitch",
+   "babble10",
+   "that may have been too challenging for the student to handle."
+  ],
+  [
+   "god damn it",
+   "babble10",
+   "One or more of the possible hypotheses."
+  ],
+  [
+   "shut the fuck up",
+   "babble10",
+   "Under the bridge is 15 meters"
+  ],
+  [
+   "what the fuck",
+   "babble10",
+   "78 recommendations is that a new Diplom-"
+  ],
+  [
+   "oh shit",
+   "babble10",
+   "to simulate observations made of those gadgets."
+  ],
+  [
+   "bullshit",
+   "room",
+   "Push it."
+  ],
+  [
+   "bullshit",
+   "babble10",
+   "the aspect of the project.  I'll see if they are secure."
+  ],
+  [
+   "what the fuck",
+   "babble10",
+   "postures."
+  ],
+  [
+   "motherfucker",
+   "clean",
+   "Motherfuck bro."
+  ],
+  [
+   "fucking hell",
+   "clean",
+   "What the hell?"
+  ],
+  [
+   "oh shit",
+   "noise10",
+   "Okay."
+  ]
+ ]
+}

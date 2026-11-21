@@ -1,0 +1,5 @@
+data/
+scores/
+logs/
+wakephonehubert_int8.onnx
+vocab.json
